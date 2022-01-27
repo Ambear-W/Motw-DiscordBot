@@ -1,5 +1,8 @@
 import hikari
 import lightbulb
+import firebase_admin
+from firebase_admin import credentials
+from config import *
 
 #make sure you activate the evn/virtual enviroment to test: venv & then run the python code py botSetUp.py
 
@@ -8,9 +11,13 @@ import lightbulb
 #basic auto-sharding bot implementation, uses the token to connect to your bot
 #don't share this (aka AMBER MAKE SURE YOU REMOVE IT BEFORE YOU PUT IT ON GITHUB SINCE IT'S PUBLIC)
 bot = lightbulb.BotApp(
-    token='', 
-    default_enabled_guilds=()
+    token = token_config, 
+    default_enabled_guilds = (default_enabled_guilds_config)
 )
+
+#calls to the config file for the info to get into our Firebase.  We do not want to share this info because other users could access the data base
+cred = credentials.Certificate(firebase_config)
+firebase_admin.initialize_app(cred)
 
 #The below is an example of an eventlistener!  eventlistners are similar to functions, expect they are listening to something!
 #  the code that will run when ever the event is triggered, which is every time a message is sent/created in the channel
@@ -46,6 +53,11 @@ async def my_group(ctx):
 @lightbulb.implements(lightbulb.SlashSubCommand)
 async def subcommand(ctx):
     await ctx.respond('I am a subcommand!')
+@my_group.child
+@lightbulb.command('subcommand27', 'This is a subcommand')
+@lightbulb.implements(lightbulb.SlashSubCommand)
+async def subcommand27(ctx):
+    await ctx.respond('I am a subcommand! BUT 27!')
 
 #we can add options to our commands but adding decorations! 
 @bot.command
