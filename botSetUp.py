@@ -4,28 +4,24 @@ import firebase_admin
 from firebase_admin import credentials
 from config import *
 
-#make sure you activate the evn/virtual enviroment to test: venv & then run the python code py botSetUp.py
-
+#Make sure you activate the evn/virtual enviroment to test: venv & then run the python code py botSetUp.py
 #Note, every time you make changes, close the bot in the terminal and then restart it.  It will then have your changes.
 
-#basic auto-sharding bot implementation, uses the token to connect to your bot
-#don't share this (aka AMBER MAKE SURE YOU REMOVE IT BEFORE YOU PUT IT ON GITHUB SINCE IT'S PUBLIC)
+#basic auto-sharding bot implementation - I made a config.py file to make data safer
 bot = lightbulb.BotApp(
     token = token_config, 
     default_enabled_guilds = (default_enabled_guilds_config)
 )
-
-#calls to the config file for the info to get into our Firebase.  We do not want to share this info because other users could access the data base
+#sets up our connection with Google Firebase - this will be were we store player's inform
+# ation!
 cred = credentials.Certificate(firebase_config)
 firebase_admin.initialize_app(cred)
 
-#The below is an example of an eventlistener!  eventlistners are similar to functions, expect they are listening to something!
-#  the code that will run when ever the event is triggered, which is every time a message is sent/created in the channel
-#   it will print what was sent in the channel in the terminal/console
+#The below is an example of an eventlistener!
+#  the code that will run when triggered - reading the message sent in chat and printing it in ther terminal (I commented it out to save time)
 #@bot.listen(hikari.GuildMessageCreateEvent)
 #async def print_message(event):
     #print(event.content)
-
 
 #These are the commands!  These are the things that your bot will do! (EX: !ping the bot will replay with Pong!)
 @bot.command
@@ -37,14 +33,13 @@ firebase_admin.initialize_app(cred)
 async def ping(ctx):
     await ctx.respond('Pong!')
 
-#There are groups and sub commands as well, they are very similar to the previous commands - but there are differences
+#There are groups and subcommands - aka you can group similar commands together
 @bot.command
 @lightbulb.command('group', 'This is a group')
-#this command is going to have subcommands and will be grouped toogether
+#this command is going to have subcommands and will be grouped toogether 
 @lightbulb.implements(lightbulb.SlashCommandGroup)
 async def my_group(ctx):
-    #do nothing just go on!
-    #why? --> group commands cannot be run with just slash commands
+    #why pass? --> group commands cannot be ran
     pass
 
 #we want the subcommands to be a child of the group we made
