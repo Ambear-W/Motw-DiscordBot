@@ -2,9 +2,11 @@ import hikari
 import lightbulb
 import firebase_admin
 from firebase_admin import credentials
+from firebase_admin import db
 from config import *
 
-#Make sure you activate the evn/virtual enviroment to test: venv & then run the python code py botSetUp.py
+#Make sure you activate the evn/virtual enviroment to test: .\env\Scripts\activate
+#To start hikari: py botSetUp.py
 #Note, every time you make changes, close the bot in the terminal and then restart it.  It will then have your changes.
 
 #basic auto-sharding bot implementation - I made a config.py file to make data safer
@@ -15,7 +17,11 @@ bot = lightbulb.BotApp(
 #sets up our connection with Google Firebase - this will be were we store player's inform
 # ation!
 cred = credentials.Certificate(firebase_config)
-firebase_admin.initialize_app(cred)
+databaseApp = firebase_admin.initialize_app(cred, {
+    'dataBaseURL' : dataBaseURL
+})
+
+bot.load_extensions("extensions.extension")
 
 #The below is an example of an eventlistener!
 #  the code that will run when triggered - reading the message sent in chat and printing it in ther terminal (I commented it out to save time)
@@ -64,5 +70,12 @@ async def subcommand27(ctx):
 @lightbulb.implements(lightbulb.SlashCommand)
 async def add(ctx):
     await ctx.respond(ctx.options.num1 + ctx.options.num2)
+
+#how to write something to the database
+@bot.command
+@lightbulb.command('test', "This is a test")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def test(ctx):
+    await ctx.message.author
 
 bot.run()
