@@ -3,9 +3,10 @@ import lightbulb
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
+from firebase_admin import firestore
 from config import *
 
-#Make sure you activate the evn/virtual enviroment to test: .\env\Scripts\activate
+#Make sure you activate the evn/virtual enviroment to test: .\env\Scripts\activate or .\\env\Scripts\activate
 #To start hikari: py botSetUp.py
 #Note, every time you make changes, close the bot in the terminal and then restart it.  It will then have your changes.
 
@@ -14,14 +15,16 @@ bot = lightbulb.BotApp(
     token = token_config, 
     default_enabled_guilds = (default_enabled_guilds_config)
 )
-#sets up our connection with Google Firebase - this will be were we store player's inform
-# ation!
-cred = credentials.Certificate(firebase_config)
-databaseApp = firebase_admin.initialize_app(cred, {
-    'dataBaseURL' : dataBaseURL
-})
+#sets up our connection with Google Firebase - this will be were we store player's information!
+
+cred = credentials.Certificate(firebaseStuff)
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
 
 bot.load_extensions("extensions.extension")
+
+#db.collection('PlayerMoves').add({'MoveName' : 'move descripition'})
 
 #The below is an example of an eventlistener!
 #  the code that will run when triggered - reading the message sent in chat and printing it in ther terminal (I commented it out to save time)
@@ -73,9 +76,44 @@ async def add(ctx):
 
 #how to write something to the database
 @bot.command
-@lightbulb.command('test', "This is a test")
+@lightbulb.command('newcharacter', "Make a character here")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def test(ctx):
-    await ctx.message.author
+async def test(ctx: lightbulb.Context) -> None:
+    member = ctx.user
+    memberName = ctx.member.display_name
+    memberID = ctx.member.id
+    data = {'name' : member, "username" : memberName}
+    db.collection('User').add({'UserId' : memberID , 'UserName' : memberName})
+    await ctx.respond("Hello!  Let's see if it's in the database!")
+
+
+#THE BASIC HUNTER MOVES
+@bot.command()
+@lightbulb.command('hunterbasicmoves', 'What moves a hunter can make')
+@lightbulb.implements(lightbulb.SlashCommandGroup)
+async def hunterBasicMoves(ctx):
+    pass
+
+@hunterBasicMoves.child
+@lightbulb.command('kick-some-ass', 'When you get into a fight and kick some ass, roll +Tough.')
+@lightbulb.implements(lightbulb.SlashSubCommand)
+async def subcommandKickSomeAss(ctx):
+    kickAss = (db.collection('HunterMoves').document('HunterBasicMoves').collection('KickSomeAss').document('description').get()).to_dict()
+    description = kickAss['description']
+    on7Plus = kickAss['on7Plus'].replace("\\n", '\n')
+    on10Plus = kickAss['on10Plus'].replace("\\n", '\n')
+    on12Plus = kickAss['on12Plus'].replace("\\n", '\n')
+    await ctx.respond(description + '\n \n' + on7Plus + '\n \n' + on10Plus + '\n \n' + on12Plus)
+
+@hunterBasicMoves.child
+@lightbulb.command('act-under-pressure', 'When you act under pressure, roll +Cool.')
+@lightbulb.implements(lightbulb.SlashSubCommand)
+async def subcommandActUnderPressure(ctx):
+    underPressure = (db.collection('HunterMoves').document('HunterBasicMoves').collection('ActUnderPressure').document('description').get()).to_dict()
+    description = underPressure['description']
+    on7Plus = underPressure['on7Plus'].replace("\\n", '\n')
+    on10Plus = underPressure['on10Plus'].replace("\\n", '\n')
+    on12Plus = underPressure['on12Plus'].replace("\\n", '\n')
+    await ctx.respond(description + '\n \n' + on7Plus + '\n \n' + on10Plus + '\n \n' + on12Plus)
 
 bot.run()
