@@ -99,7 +99,7 @@ async def hunterBasicMoves(ctx):
 @lightbulb.implements(lightbulb.SlashSubCommand)
 async def subcommandKickSomeAss(ctx):
     kickAss = (db.collection('HunterMoves').document('HunterBasicMoves').collection('KickSomeAss').document('description').get()).to_dict()
-    description = kickAss['description']
+    description = kickAss['description'].replace("\\n", '\n')
     on7Plus = kickAss['on7Plus'].replace("\\n", '\n')
     on10Plus = kickAss['on10Plus'].replace("\\n", '\n')
     on12Plus = kickAss['on12Plus'].replace("\\n", '\n')
@@ -110,10 +110,105 @@ async def subcommandKickSomeAss(ctx):
 @lightbulb.implements(lightbulb.SlashSubCommand)
 async def subcommandActUnderPressure(ctx):
     underPressure = (db.collection('HunterMoves').document('HunterBasicMoves').collection('ActUnderPressure').document('description').get()).to_dict()
-    description = underPressure['description']
+    description = underPressure['description'].replace("\\n", '\n')
     on7Plus = underPressure['on7Plus'].replace("\\n", '\n')
     on10Plus = underPressure['on10Plus'].replace("\\n", '\n')
     on12Plus = underPressure['on12Plus'].replace("\\n", '\n')
     await ctx.respond(description + '\n \n' + on7Plus + '\n \n' + on10Plus + '\n \n' + on12Plus)
+
+@hunterBasicMoves.child
+@lightbulb.command('help-out', 'When you help another hunter, roll +Cool.')
+@lightbulb.implements(lightbulb.SlashSubCommand)
+async def subcommandActUnderPressure(ctx):
+    helpOut = (db.collection('HunterMoves').document('HunterBasicMoves').collection('HelpOut').document('description').get()).to_dict()
+    description = helpOut['description'].replace("\\n", '\n')
+    on7Plus = helpOut['on7Plus'].replace("\\n", '\n')
+    on10Plus = helpOut['on10Plus'].replace("\\n", '\n')
+    on12Plus = helpOut['on12Plus'].replace("\\n", '\n')
+    await ctx.respond(description + '\n \n' + on7Plus + '\n \n' + on10Plus + '\n \n' + on12Plus)
+
+@hunterBasicMoves.child
+@lightbulb.command('investigate-a-mystery', 'When you investigate a mystery, roll +Sharp.')
+@lightbulb.implements(lightbulb.SlashSubCommand)
+async def subcommandActUnderPressure(ctx):
+    investigateMystery = (db.collection('HunterMoves').document('HunterBasicMoves').collection('InvestigateAMystery').document('description').get()).to_dict()
+    description = investigateMystery['description'].replace("\\n", '\n')
+    holds = investigateMystery['holds'].replace("\\n", '\n')
+    on7Plus = investigateMystery['on7Plus'].replace("\\n", '\n')
+    on10Plus = investigateMystery['on10Plus'].replace("\\n", '\n')
+    on12Plus = investigateMystery['on12Plus'].replace("\\n", '\n')
+    await ctx.respond(description + '\n \n' + on7Plus + '\n \n' + on10Plus + '\n \n' + holds + '\n \n' + on12Plus)
+
+@hunterBasicMoves.child
+@lightbulb.command('manipulate-someone', 'Once you have given them a reason, tell them what you want them to do and roll +Charm')
+@lightbulb.implements(lightbulb.SlashSubCommand)
+async def subcommandActUnderPressure(ctx):
+    investigateMysteryDescription = (db.collection('HunterMoves').document('HunterBasicMoves').collection('ManipulateSomeone').document('description').get()).to_dict()
+    description = investigateMysteryDescription['description'].replace("\\n", '\n')
+
+    investigateMysteryNormal = (db.collection('HunterMoves').document('HunterBasicMoves').collection('ManipulateSomeone').document('normalPerson').get()).to_dict()
+    on7PlusNormal = investigateMysteryNormal['on7Plus'].replace("\\n", '\n')
+    on10PlusNormal = investigateMysteryNormal['on10Plus'].replace("\\n", '\n')
+    on12PlusNormal = investigateMysteryNormal['on12Plus'].replace("\\n", '\n')
+    descriptionNormal = investigateMysteryNormal['description'].replace("\\n", '\n')
+
+    investigateMysteryHunter = (db.collection('HunterMoves').document('HunterBasicMoves').collection('ManipulateSomeone').document('hunterPerson').get()).to_dict()
+    on7PlusHunter = investigateMysteryHunter['on7Plus'].replace("\\n", '\n')
+    on10PlusHunter = investigateMysteryHunter['on10Plus'].replace("\\n", '\n')
+    on12PlusHunter = investigateMysteryHunter['on12Plus'].replace("\\n", '\n')
+    descriptionHunter = investigateMysteryHunter['description'].replace("\\n", '\n')
+    onMiss = investigateMysteryHunter['onMiss'].replace("\\n", '\n')
+    
+    await ctx.respond(
+        description + 
+        '\n \n' + '**' + descriptionNormal + '**' + '\n - ' + on10PlusNormal + '\n - ' + on7PlusNormal + '\n - ' + on12PlusNormal +
+        '\n \n' + '**' + descriptionHunter + '**' + '\n - ' + on10PlusHunter + '\n - ' + on7PlusHunter + '\n - ' + onMiss + '\n -' + on12PlusHunter       
+    )
+
+@hunterBasicMoves.child
+@lightbulb.command('protect-someone', 'When you prevent harm to another character, roll +Tough')
+@lightbulb.implements(lightbulb.SlashSubCommand)
+async def subcommandActUnderPressure(ctx):
+    protectSomeone = (db.collection('HunterMoves').document('HunterBasicMoves').collection('ProtectSomeone').document('description').get()).to_dict()
+    description = protectSomeone['description'].replace("\\n", '\n')
+    on7Plus = protectSomeone['on7Plus'].replace("\\n", '\n')
+    on10Plus = protectSomeone['on10Plus'].replace("\\n", '\n')
+    on12Plus = protectSomeone['on12Plus'].replace("\\n", '\n')
+    await ctx.respond(description + '\n \n' + on7Plus + '\n \n' + on10Plus + '\n \n' + on12Plus)
+
+@hunterBasicMoves.child
+@lightbulb.command('read-a-bad-situation', 'When you look around and read a bad situation, roll +Sharp.')
+@lightbulb.implements(lightbulb.SlashSubCommand)
+async def subcommandActUnderPressure(ctx):
+    readSituation = (db.collection('HunterMoves').document('HunterBasicMoves').collection('ReadABadSituation').document('description').get()).to_dict()
+    description = readSituation['description'].replace("\\n", '\n')
+    holds = readSituation['holds'].replace("\\n", '\n')
+    on7Plus = readSituation['on7Plus'].replace("\\n", '\n')
+    on10Plus = readSituation['on10Plus'].replace("\\n", '\n')
+    on12Plus = readSituation['on12Plus'].replace("\\n", '\n')
+    await ctx.respond(description + '\n \n' + on7Plus + '\n \n' + on10Plus + '\n \n' + holds + '\n \n' + on12Plus)
+
+@hunterBasicMoves.child
+@lightbulb.command('use-magic', 'When you look around and read a bad situation, roll +Sharp.')
+@lightbulb.implements(lightbulb.SlashSubCommand)
+async def subcommandActUnderPressure(ctx):
+    useMagic = (db.collection('HunterMoves').document('HunterBasicMoves').collection('UseMagic').document('description').get()).to_dict()
+    description = useMagic['description'].replace("\\n", '\n')
+    effects = useMagic['effects'].replace("\\n", '\n')
+    glitches = useMagic['glitches'].replace("\\n", '\n')
+    keeperMaySay = useMagic['keeperMaySay'].replace("\\n", '\n')
+    on7Plus = useMagic['on7Plus'].replace("\\n", '\n')
+    on10Plus = useMagic['on10Plus'].replace("\\n", '\n')
+    on12Plus = useMagic['on12Plus'].replace("\\n", '\n')
+    await ctx.respond(description + '\n \n' + on7Plus + '\n \n' + on10Plus + '\n \n' + on12Plus + '\n \n' + effects + '\n \n' + glitches + '\n \n' + keeperMaySay)
+
+@hunterBasicMoves.child
+@lightbulb.command('big-magic', 'When you look around and read a bad situation, roll +Sharp.')
+@lightbulb.implements(lightbulb.SlashSubCommand)
+async def subcommandActUnderPressure(ctx):
+    bigMagic = (db.collection('HunterMoves').document('HunterBasicMoves').collection('BigMagic').document('description').get()).to_dict()
+    description = bigMagic['description'].replace("\\n", '\n')
+    keeperMayRequire = bigMagic['keeperMayRequire'].replace("\\n", '\n')
+    await ctx.respond(description + '\n \n' + keeperMayRequire)
 
 bot.run()
